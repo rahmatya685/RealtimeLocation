@@ -1,14 +1,14 @@
 package com.realtimemap.repo.remote.mapper
 
-import com.realtimemap.repo.model.UserLocationModel
+import com.realtimemap.domain.model.UserLocation
 import javax.inject.Inject
 
 class RemoteLocationMapper @Inject constructor() :
-    RemoteModelMapper<String, UserLocationModel> {
+    RemoteModelMapper<String, UserLocation> {
 
-    override fun mapFromModel(model: String): UserLocationModel {
+    override fun mapFromModel(model: String): UserLocation {
         val attributes = model.trim().split(",")
-        return UserLocationModel(
+        return UserLocation(
             id = attributes[0].toInt(),
             name = attributes[1],
             imageUrl = attributes[2],

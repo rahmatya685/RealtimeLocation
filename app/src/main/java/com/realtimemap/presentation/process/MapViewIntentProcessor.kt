@@ -13,8 +13,9 @@ class MapViewIntentProcessor @Inject constructor() :
 
     override fun intentToAction(intent: MapViewIntent): MapViewAction {
         return when (intent) {
-            MapViewIntent.LoadInitialViewIntent -> MapViewAction.LoadInitialAction
+            MapViewIntent.LoadInitialViewIntent -> MapViewAction.LoadLocations
             MapViewIntent.RetryFetchViewIntent -> MapViewAction.RetryFetchAction
+            MapViewIntent.GetLocationUpdates ->  MapViewAction.GetLocationUpdates
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.realtimemap.presentation.map
 
+import com.realtimemap.domain.model.UpdatedLocation
 import com.realtimemap.presentation.event.ViewEvent
 import com.realtimemap.presentation.mvi.ViewState
 import com.realtimemap.repo.model.UserLocationModel
@@ -7,8 +8,11 @@ import com.realtimemap.repo.model.UserLocationModel
 data class MapViewState private constructor(
     val isLoading: Boolean,
     val isDataUnavailable: Boolean,
+    val isLocationUpdated:Boolean,
+    val updateLocation: UpdatedLocation?,
     val error: String?,
     val errorEvent: ViewEvent<String>?,
+    val isDataAvailableError:Boolean = false,
     val locations: List<UserLocationModel>
 ) : ViewState {
 
@@ -20,10 +24,10 @@ data class MapViewState private constructor(
             errorEvent = null
         )
 
-    val refreshingState: MapViewState
+    val emptyState: MapViewState
         get() = this.copy(
-            isLoading = false,
-            isDataUnavailable = false,
+            isLoading = false ,
+            isDataUnavailable = true,
             error = null,
             errorEvent = null
         )
@@ -39,6 +43,7 @@ data class MapViewState private constructor(
         isLoading = false,
         isDataUnavailable = false,
         error = null,
+        isDataAvailableError = true,
         errorEvent = ViewEvent(cause)
     )
 
@@ -49,6 +54,17 @@ data class MapViewState private constructor(
         errorEvent = null,
         locations = locations
     )
+    fun updatedState(updateLocation: UpdatedLocation): MapViewState = this.copy(
+        isLoading = false,
+        isDataUnavailable = false,
+        error = null,
+        errorEvent = null,
+        isLocationUpdated = true,
+        locations = locations,
+        updateLocation = updateLocation
+    )
+
+
 
     val isNoDataError: Boolean
         get() = this.error != null
@@ -61,7 +77,9 @@ data class MapViewState private constructor(
                 error = null,
                 isDataUnavailable = false,
                 errorEvent = null,
-                locations = emptyList()
+                locations = emptyList(),
+                isLocationUpdated = false,
+                updateLocation =null
             )
     }
 }

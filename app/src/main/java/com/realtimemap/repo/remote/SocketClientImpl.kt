@@ -8,6 +8,7 @@ import java.io.InputStreamReader
 import java.io.PrintWriter
 import java.net.Socket
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 class SocketClientImpl @Inject constructor(
     socketParams: SocketParams
@@ -16,6 +17,19 @@ class SocketClientImpl @Inject constructor(
     private lateinit var socket: Socket
     private lateinit var out: PrintWriter
     private lateinit var `in`: BufferedReader
+    private lateinit var userLocations: (List<String>) -> Unit
+    private lateinit var userLocationsUpdate: (String) -> Unit
+    private var data by Delegates.observable("", { _, _, raw ->
+        if (isUpdate(raw) && ::userLocationsUpdate.isInitialized){
+            val cleanText =raw.replace(Constants.KEY_UPDATE,"").trim()
+            userLocationsUpdate.invoke(cleanText )
+        }
+        if (isUserList(raw) && ::userLocations.isInitialized) {
+            val purified = purifyText(raw)
+            userLocations.invoke(purified)
+        }
+
+    })
 
     init {
         GlobalScope.launch {
@@ -26,25 +40,24 @@ class SocketClientImpl @Inject constructor(
         }
     }
 
-    override fun listenToUpdates(userLocationsUpdate: (List<String>) -> Unit) {
+    override fun listenToUpdates(userLocationsUpdate: (String) -> Unit) {
+        this.userLocationsUpdate = userLocationsUpdate
+        initListener()
+    }
+
+    override fun listenToUserLocation(userLocations: (List<String>) -> Unit) {
+        this.userLocations = userLocations
+        initListener()
+    }
+
+    private fun initListener() {
         while (isSocketValid()) {
             `in`.readLine()?.let { raw ->
-                val purified = purifyText(raw)
-                if (isUpdate(raw))
-                    userLocationsUpdate.invoke(purified)
+                data = raw
             }
         }
     }
 
-    override fun listenToUserLocation(userLocations: (List<String>) -> Unit) {
-        while (isSocketValid()) {
-            `in`.readLine()?.let { raw ->
-                val purified = purifyText(raw)
-                if (isUserList(raw))
-                    userLocations.invoke(purified)
-            }
-        }
-    }
 
     fun isSocketValid(): Boolean = ::socket.isInitialized && !socket.isClosed
 

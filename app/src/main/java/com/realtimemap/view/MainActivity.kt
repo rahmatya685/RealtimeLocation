@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
         val binding: ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         NavigationUI.setupActionBarWithNavController(
             this,
             navController,

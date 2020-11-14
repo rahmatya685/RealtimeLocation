@@ -14,6 +14,6 @@ class HomeStateMachine @Inject constructor(
     actionProcessor,
     intentProcessor,
     stateReducer,
-    MapViewAction.LoadInitialAction,
+    MapViewAction.DoNothing,
     MapViewState.init
 )

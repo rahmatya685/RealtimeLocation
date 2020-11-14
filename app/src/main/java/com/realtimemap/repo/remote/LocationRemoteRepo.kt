@@ -1,8 +1,10 @@
 package com.realtimemap.repo.remote
 
-import com.realtimemap.repo.model.UserLocationModel
+import com.realtimemap.domain.model.UpdatedLocation
+import com.realtimemap.domain.model.UserLocation
 import kotlinx.coroutines.flow.Flow
 
 interface LocationRemoteRepo {
-    fun fetchUsersLocations(): Flow<List<UserLocationModel>>
+    fun fetchUsersLocations(): Flow<List<UserLocation>>
+    fun fetchUserLocationUpdates(): Flow<UpdatedLocation>
 }

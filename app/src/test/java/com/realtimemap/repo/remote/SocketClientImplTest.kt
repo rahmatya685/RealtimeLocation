@@ -1,16 +1,17 @@
 package com.realtimemap.repo.remote
 
 import com.realtimemap.util.Constants
+import junit.framework.TestCase
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
 class SocketClientImplTest {
 
-    lateinit var socket:SocketClientImpl
+    lateinit var socket: SocketClientImpl
 
-    fun initSocket(){
-        val params =  SocketParams(
+    fun initSocket() {
+        val params = SocketParams(
             ip = Constants.URL,
             port = Constants.PORT,
             authentication = Constants.AUTHENTICATION
@@ -26,7 +27,7 @@ class SocketClientImplTest {
     fun `check if socket initialized and update info is available to listen`() {
         initSocket()
         socket.listenToUpdates {
-
+            TestCase.assertFalse(it.isNullOrBlank())
             socket.disconnect()
         }
     }
@@ -34,8 +35,8 @@ class SocketClientImplTest {
     @Test
     fun `check if socket initialized and location info is available to listen`() {
         initSocket()
-        socket.listenToUserLocation {
-
+        socket.listenToUserLocation { list ->
+            TestCase.assertFalse(list.count { it.isNullOrBlank() } == 0)
             socket.disconnect()
         }
     }
@@ -51,14 +52,13 @@ class SocketClientImplTest {
     }
 
 
-
     @Test
     fun `check if text body is parsed correctly`() {
-        var textArrays =   socket.purifyText(DummyData.USER_LIST)
+        var textArrays = socket.purifyText(DummyData.USER_LIST)
         Assert.assertTrue(textArrays.isNotEmpty())
-        Assert.assertTrue(textArrays.count { it.isNullOrBlank() } ==0)
+        Assert.assertTrue(textArrays.count { it.isNullOrBlank() } == 0)
 
-        textArrays= socket.purifyText("")
+        textArrays = socket.purifyText("")
 
         Assert.assertTrue(textArrays.isEmpty())
 

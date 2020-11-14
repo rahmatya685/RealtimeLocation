@@ -23,12 +23,28 @@ class MapViewStateReducer @Inject constructor(private val mapModelMapper: MapMod
                 result,
                 previous
             )
-            is MapViewResult.RefreshLocationsResult -> handleRefreshRecipeResult(
-                mapModelMapper,
+            is MapViewResult.GetLocationUpdates->handleGetLocationUpdatesResult(
                 result,
                 previous
             )
         }
+    }
+
+    private fun handleGetLocationUpdatesResult(
+        result: MapViewResult.GetLocationUpdates,
+        previous: MapViewState
+    ): MapViewState {
+         return  when(result){
+             is MapViewResult.GetLocationUpdates.Updated -> previous.updatedState(
+                 updateLocation = result.updatedLocation
+             )
+             MapViewResult.GetLocationUpdates.Loading -> previous.loadingState
+             MapViewResult.GetLocationUpdates.Empty -> handleEmptyState(previous)
+             is MapViewResult.GetLocationUpdates.Error -> handleErrorState(
+                 previous,
+                 result.cause.message!!
+             )
+         }
     }
 
     private fun handleEmptyState(previous: MapViewState): MapViewState {
@@ -49,7 +65,7 @@ class MapViewStateReducer @Inject constructor(private val mapModelMapper: MapMod
         return when (loadInitialResult) {
             is MapViewResult.LoadInitialResult.Loaded -> previous.loadedState(
                 mapper.mapToModelList(
-                    loadInitialResult.recipes
+                    loadInitialResult.locations
                 )
             )
             is MapViewResult.LoadInitialResult.Error -> handleErrorState(
@@ -58,6 +74,7 @@ class MapViewStateReducer @Inject constructor(private val mapModelMapper: MapMod
             )
             MapViewResult.LoadInitialResult.Empty -> handleEmptyState(previous)
             MapViewResult.LoadInitialResult.Loading -> previous.loadingState
+
         }
     }
 
@@ -69,7 +86,7 @@ class MapViewStateReducer @Inject constructor(private val mapModelMapper: MapMod
         return when (retryFetchResult) {
             is MapViewResult.RetryFetchResult.Loaded -> previous.loadedState(
                 mapper.mapToModelList(
-                    retryFetchResult.recipes
+                    retryFetchResult.locations
                 )
             )
             is MapViewResult.RetryFetchResult.Error -> handleErrorState(
@@ -81,23 +98,5 @@ class MapViewStateReducer @Inject constructor(private val mapModelMapper: MapMod
         }
     }
 
-    private fun handleRefreshRecipeResult(
-        mapper: MapModelMapper,
-        refreshRecipesResult: MapViewResult.RefreshLocationsResult  ,
-        previous: MapViewState
-    ): MapViewState {
-        return when (refreshRecipesResult) {
-            is MapViewResult.RefreshLocationsResult.Loaded -> previous.loadedState(
-                mapper.mapToModelList(
-                    refreshRecipesResult.recipes
-                )
-            )
-            is MapViewResult.RefreshLocationsResult.Error -> handleErrorState(
-                previous,
-                refreshRecipesResult.cause.localizedMessage!!
-            )
-            MapViewResult.RefreshLocationsResult.Refreshing -> previous.refreshingState
-            MapViewResult.RefreshLocationsResult.Empty -> handleEmptyState(previous)
-        }
-    }
+
 }
