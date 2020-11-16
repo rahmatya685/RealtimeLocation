@@ -25,7 +25,7 @@ This app have been developed to show users locations on map and updating their p
 *   [Dagger Hilt](https://dagger.dev/hilt)
 *   [MapBox](https://docs.mapbox.com/android/maps/overview/)
 
-## To Do In Future
+## To Do
 *   Improvinge unit tests coverage
 *   Implementing UI Tests 
 *   Kotlin Gradle DSL
