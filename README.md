@@ -32,11 +32,9 @@ This app have been developed to show users locations on map and updating their p
 *   Dynamic Feature Modules 
 
 
-<h2 align="left">Screenshots</h2>
+<h2 align="left">Video</h2>
 <h4 align="center">
-<img src="https://res.cloudinary.com/diixxqjcx/image/upload/v1550561235/main.png" width="30%" vspace="10" hspace="10">
-<img src="https://res.cloudinary.com/diixxqjcx/image/upload/v1550561235/step.png" width="30%" vspace="10" hspace="10">
-<img src="https://res.cloudinary.com/diixxqjcx/image/upload/v1550561234/detail.png" width="30%" vspace="10" hspace="10""><br>
+   <source src="https://drive.google.com/file/d/1S6Vx8KGOaGHDj4HY8Wnv-qdBcuKH0tHu/view?usp=sharing" type="video/mp4">
 
 ## Author
 Alireza Rahmati
