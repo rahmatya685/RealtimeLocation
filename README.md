@@ -34,7 +34,7 @@ This app have been developed to show users locations on map and updating their p
 
 <h2 align="left">Video</h2>
 <h4 align="center">
-   <source src="https://drive.google.com/file/d/1S6Vx8KGOaGHDj4HY8Wnv-qdBcuKH0tHu/view?usp=sharing" type="video/mp4">
+ <img src="https://raw.githubusercontent.com/rahmatya685/RealtimeLocation/master/screenshot1.jpeg" width="30%" vspace="10" hspace="10"> 
 
 ## Author
 Alireza Rahmati
