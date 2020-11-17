@@ -1,13 +1,14 @@
 package com.realtimemap.presentation.process
 
 import com.realtimemap.di.module.FeatureScope
-import com.realtimemap.domain.model.UpdatedLocation
+import com.realtimemap.domain.model.LocationUpdate
 import com.realtimemap.domain.model.UserLocation
 import com.realtimemap.domain.usecase.FetchLocationUpdates
 import com.realtimemap.domain.usecase.FetchLocations
 import com.realtimemap.presentation.map.MapViewAction
 import com.realtimemap.presentation.map.MapViewResult
 import com.realtimemap.presentation.mvi.ActionProcessor
+import com.realtimemap.repo.model.UserLocationModel
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
@@ -21,15 +22,17 @@ class MapActionProcessor @Inject constructor(
     private val locations: Flow<List<UserLocation>>
         get() = fetchLocationsUseCase()
 
-    private val locationUpdates: Flow<UpdatedLocation>
+    private val locationUpdates: Flow<LocationUpdate>
         get() = fetchLocationUpdatesUseCase()
+
 
     override fun actionToResult(viewAction: MapViewAction): Flow<MapViewResult> {
         return when (viewAction) {
             MapViewAction.RetryFetchAction -> retryFetch
-            MapViewAction.LoadLocations -> loadLocations
+            MapViewAction.LoadLocationsAction -> loadLocations
             MapViewAction.DoNothing -> emptyFlow()
-            MapViewAction.GetLocationUpdates ->getUpdates
+            MapViewAction.GetLocationUpdatesAction -> getUpdates
+            is MapViewAction.ShowLocationDetailAction -> showLocationDetail(viewAction.userLocationModel)
         }
     }
 
@@ -73,4 +76,7 @@ class MapActionProcessor @Inject constructor(
         }.catch { cause: Throwable ->
             emit(MapViewResult.GetLocationUpdates.Error(cause))
         }
+
+    private fun showLocationDetail(userLocationModel: UserLocationModel): Flow<MapViewResult> =
+        flowOf(MapViewResult.ShowLocationDetail(userLocationModel))
 }

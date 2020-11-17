@@ -1,9 +1,9 @@
-package com.realtimemap.presentation.mvi
+package com.realtimemap.presentation.map
 
-import com.realtimemap.presentation.map.MapViewAction
-import com.realtimemap.presentation.map.MapViewIntent
-import com.realtimemap.presentation.map.MapViewResult
-import com.realtimemap.presentation.map.MapViewState
+import com.realtimemap.presentation.mvi.MapIntentProcessor
+import com.realtimemap.presentation.mvi.MapStateReducer
+import com.realtimemap.presentation.mvi.MapViewActionProcessor
+import com.realtimemap.presentation.mvi.StateMachine
 import javax.inject.Inject
 
 class HomeStateMachine @Inject constructor(

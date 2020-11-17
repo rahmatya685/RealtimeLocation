@@ -9,8 +9,9 @@ import dagger.multibindings.IntoMap
 
 @DisableInstallInCheck
 @Module
-interface ViewModelModule {
+interface MapViewModelModule {
 
     @get:[Binds IntoMap ViewModelKey(MapViewModel::class)]
-    val MapViewModel.recipeViewModel: ViewModel
+    val MapViewModel.mapViewModel: ViewModel
+
 }

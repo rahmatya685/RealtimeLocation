@@ -27,7 +27,18 @@ class MapViewStateReducer @Inject constructor(private val mapModelMapper: MapMod
                 result,
                 previous
             )
+            is MapViewResult.ShowLocationDetail-> handleLoadAddressResult(
+                result,
+                previous
+            )
         }
+    }
+
+    private fun handleLoadAddressResult(
+        result: MapViewResult.ShowLocationDetail,
+        previous: MapViewState
+    ): MapViewState {
+        return  previous.navigateToLocationDetail(mapModelMapper.mapToDomain(result.location) )
     }
 
     private fun handleGetLocationUpdatesResult(

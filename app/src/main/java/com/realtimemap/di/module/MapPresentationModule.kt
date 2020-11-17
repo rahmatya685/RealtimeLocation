@@ -12,14 +12,16 @@ import dagger.hilt.migration.DisableInstallInCheck
 
 @DisableInstallInCheck
 @Module
-interface PresentationModule {
+interface MapPresentationModule {
 
     @get:[Binds FeatureScope]
-    val MapActionProcessor.actionProcessor: MapViewActionProcessor
+    val MapActionProcessor.mapActionProcessor: MapViewActionProcessor
 
     @get:[Binds FeatureScope]
-    val MapViewIntentProcessor.intentProcessor: MapIntentProcessor
+    val MapViewIntentProcessor.mapIntentProcessor: MapIntentProcessor
 
     @get:[Binds FeatureScope]
-    val MapViewStateReducer.reducer: MapStateReducer
+    val MapViewStateReducer.mapReducer: MapStateReducer
+
+
 }

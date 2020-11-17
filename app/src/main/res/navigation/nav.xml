@@ -12,12 +12,25 @@
         android:label="Map"
         app:moduleName="map"
         tools:layout="@layout/fragment_map">
-        <!--        <action-->
-        <!--            android:id="@+id/open_recipe_detail"-->
-        <!--            app:destination="@id/recipeDetailFragment"-->
-        <!--            app:enterAnim="@anim/nav_default_enter_anim"-->
-        <!--            app:exitAnim="@anim/nav_default_exit_anim"-->
-        <!--            app:popEnterAnim="@anim/nav_default_pop_enter_anim"-->
-        <!--            app:popExitAnim="@anim/nav_default_pop_exit_anim" />-->
+        <action
+            android:id="@+id/open_location_detail"
+            app:destination="@id/locationInfoFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
+
+
+    <dialog
+        android:id="@+id/locationInfoFragment"
+        android:name="com.realtimemap.view.LocationDetailFragment"
+        android:label="locationInfo"
+        app:moduleName="map"
+        tools:layout="@layout/fragment_location_info">
+        <argument
+            android:name="locationInfo"
+            app:argType="com.realtimemap.domain.model.UserLocation"
+            app:nullable="false"/>
+    </dialog>
 </navigation>

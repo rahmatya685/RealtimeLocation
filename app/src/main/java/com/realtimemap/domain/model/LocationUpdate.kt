@@ -1,6 +1,6 @@
 package com.realtimemap.domain.model
 
-data class UpdatedLocation(
+data class LocationUpdate(
     val id:Int,
     val lat:Double,
     val long:Double

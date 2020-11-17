@@ -16,12 +16,12 @@ import com.mapbox.mapboxsdk.geometry.LatLngBounds
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.plugins.annotation.Symbol
-import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.realtimemap.R
 import com.realtimemap.databinding.FragmentMapBinding
 import com.realtimemap.di.inject
-import com.realtimemap.domain.model.UpdatedLocation
+import com.realtimemap.domain.model.LocationUpdate
+import com.realtimemap.domain.model.UserLocation
 import com.realtimemap.ext.observe
 import com.realtimemap.ext.toJson
 import com.realtimemap.navigation.NavigationDispatcher
@@ -32,7 +32,8 @@ import com.realtimemap.repo.model.UserLocationModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -47,7 +48,7 @@ class MapFragment :
     var ID_MAP_ICON = "MAP_ICON"
 
 
-    lateinit var symbolManager: SymbolManager
+    lateinit var symbolManager: SymbolManagerWrapper
 
     val channel: Channel<MapViewIntent> = Channel { }
 
@@ -85,25 +86,34 @@ class MapFragment :
 
     override fun render(state: MapViewState) {
         when {
-            state.isDataUnavailable -> binding.renderEmptyState(state)
+            state.isDataUnavailable -> renderEmptyState(state)
             state.isNoDataError -> binding.renderNoDataErrorState(state)
             state.isLoading -> binding.renderLoadingState()
             state.isLocationUpdated -> locationUpdateReceived(state.updateLocation)
             state.isDataAvailableError -> binding.renderNoDataErrorState(state)
+            state.hasLocationWithAddress -> showLocationDetail(state)
             else -> renderSuccessState(state)
         }
     }
 
+    private fun showLocationDetail(state: MapViewState) {
+        state.location?.consume(navigator.get()::openLocationInfoFragment)
+    }
 
-    private val loadInitialIntent: Flow<MapViewIntent.LoadInitialViewIntent>
-        get() = flow { MapViewIntent.LoadInitialViewIntent }
-
+    private val openStepInfoIntent: Flow<MapViewIntent.ShowLocationDetailIntent>
+        get() = symbolManager.symbolClicks.map { userLocationDetail ->
+            MapViewIntent.ShowLocationDetailIntent(userLocation = userLocationDetail)
+        }
 
     override val intents: Flow<MapViewIntent>
-        get() = channel.consumeAsFlow()
+        get() = merge(channel.consumeAsFlow(), openStepInfoIntent)
 
-    private fun FragmentMapBinding.renderEmptyState(state: MapViewState) {
-
+    private fun renderEmptyState(state: MapViewState) {
+        Snackbar.make(
+            binding.root,
+            getString(R.string.msg_info_no_data_found),
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 
     private fun FragmentMapBinding.renderLoadingState() {
@@ -126,7 +136,7 @@ class MapFragment :
         }
     }
 
-    private fun locationUpdateReceived(updateLocation: UpdatedLocation?) {
+    private fun locationUpdateReceived(updateLocation: LocationUpdate?) {
         updateLocation?.let {
             this.locations[updateLocation.id]?.let {
                 it.geometry = Point.fromLngLat(updateLocation.lat, updateLocation.long)
@@ -155,10 +165,10 @@ class MapFragment :
                     resources, R.drawable.mapbox_marker_icon_default
                 )
             )
-            symbolManager = SymbolManager(binding.mapView, mapboxMap, style)
+            symbolManager = SymbolManagerWrapper(binding.mapView, mapboxMap, style)
             symbolManager.addClickListener(this::onSymbolClickListener)
             channel.offer(MapViewIntent.LoadInitialViewIntent)
-            channel.offer(MapViewIntent.GetLocationUpdates)
+            channel.offer(MapViewIntent.GetLocationUpdatesIntent)
         }
     }
 
@@ -173,9 +183,8 @@ class MapFragment :
         }
     }
 
-    private fun onSymbolClickListener(symbol: Symbol): Boolean {
+    private fun onSymbolClickListener(userLocation: UserLocation) {
 
-        return true
     }
 
     override fun onStart() {

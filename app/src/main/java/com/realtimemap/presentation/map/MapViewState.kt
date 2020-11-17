@@ -1,6 +1,7 @@
 package com.realtimemap.presentation.map
 
-import com.realtimemap.domain.model.UpdatedLocation
+import com.realtimemap.domain.model.LocationUpdate
+import com.realtimemap.domain.model.UserLocation
 import com.realtimemap.presentation.event.ViewEvent
 import com.realtimemap.presentation.mvi.ViewState
 import com.realtimemap.repo.model.UserLocationModel
@@ -9,11 +10,13 @@ data class MapViewState private constructor(
     val isLoading: Boolean,
     val isDataUnavailable: Boolean,
     val isLocationUpdated:Boolean,
-    val updateLocation: UpdatedLocation?,
+    val updateLocation: LocationUpdate?,
     val error: String?,
     val errorEvent: ViewEvent<String>?,
     val isDataAvailableError:Boolean = false,
-    val locations: List<UserLocationModel>
+    val locations: List<UserLocationModel>,
+    val hasLocationWithAddress:Boolean =false,
+    val location: ViewEvent<UserLocation>? =null
 ) : ViewState {
 
     val loadingState: MapViewState
@@ -54,7 +57,7 @@ data class MapViewState private constructor(
         errorEvent = null,
         locations = locations
     )
-    fun updatedState(updateLocation: UpdatedLocation): MapViewState = this.copy(
+    fun updatedState(updateLocation: LocationUpdate): MapViewState = this.copy(
         isLoading = false,
         isDataUnavailable = false,
         error = null,
@@ -62,6 +65,16 @@ data class MapViewState private constructor(
         isLocationUpdated = true,
         locations = locations,
         updateLocation = updateLocation
+    )
+
+    fun navigateToLocationDetail(userLocation: UserLocation) = this.copy(
+        isLoading = false,
+        isDataUnavailable = false,
+        error = null,
+        errorEvent = null,
+        isLocationUpdated = false,
+        hasLocationWithAddress = true,
+        location = ViewEvent(userLocation)
     )
 
 
