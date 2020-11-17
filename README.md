@@ -34,6 +34,7 @@ This app have been developed to show users locations on map and updating their p
 <h2 align="left">>Images</h2>
 <h4 align="center">
  <img src="https://raw.githubusercontent.com/rahmatya685/RealtimeLocation/master/screenshot1.jpeg" width="30%" vspace="10" hspace="10"> 
+ <img src="https://raw.githubusercontent.com/rahmatya685/RealtimeLocation/master/screenshot2.jpeg" width="30%" vspace="10" hspace="10">
 
 ## Author
 Alireza Rahmati
