@@ -14,5 +14,5 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 
 data class Properties (
 
-	val accuracy : String
+	val accuracy : String?
 )

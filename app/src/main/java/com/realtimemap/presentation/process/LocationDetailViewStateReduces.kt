@@ -43,8 +43,8 @@ class LocationDetailViewStateReducer @Inject constructor( ) :
 
 
     private fun handleEmptyState(previous: LocationDetailViewState): LocationDetailViewState {
-        return if (previous.locationWithAddress==null) previous.emptyState
-        else previous.loadedState(previous.locationWithAddress)
+        return if (previous.locationWithAddress!= null && previous.locationWithAddress.address =="") previous.emptyState
+        else previous.loadedState(previous.locationWithAddress!!)
     }
 
     private fun handleErrorState(previous: LocationDetailViewState, cause: String): LocationDetailViewState {

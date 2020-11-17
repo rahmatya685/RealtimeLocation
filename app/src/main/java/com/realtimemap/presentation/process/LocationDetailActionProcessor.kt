@@ -2,7 +2,6 @@ package com.realtimemap.presentation.process
 
 import com.realtimemap.di.module.FeatureScope
 import com.realtimemap.domain.model.UserLocation
-import com.realtimemap.domain.model.UserLocationWithAddress
 import com.realtimemap.domain.usecase.FetchAddressUseCase
 import com.realtimemap.presentation.locationdetail.LocationDetailViewAction
 import com.realtimemap.presentation.locationdetail.LocationDetailViewResult
@@ -17,25 +16,18 @@ class LocationDetailViewActionProcessor @Inject constructor(
 ) : ActionProcessor<LocationDetailViewAction, LocationDetailViewResult> {
 
 
-    override fun actionToResult(viewAction: LocationDetailViewAction): Flow<LocationDetailViewResult> =flow {
+    override fun actionToResult(viewAction: LocationDetailViewAction): Flow<LocationDetailViewResult> =
         when (viewAction) {
             is LocationDetailViewAction.LoadInfoAction -> locationWithAddress(viewAction.userLocation)
             LocationDetailViewAction.DoNothing -> emptyFlow()
         }
-    }
+
 
     private fun locationWithAddress(userLocation: UserLocation): Flow<LocationDetailViewResult> =
-        fetchAddressUserCase(userLocation).map { address ->
-            if (address != null) {
+        fetchAddressUserCase(userLocation).map { userLocationWithAddressModel ->
+            if (userLocationWithAddressModel != null) {
                 LocationDetailViewResult.LoadLocationDetailResult.Loaded(
-                    UserLocationWithAddress(
-                        id = userLocation.id,
-                        name = userLocation.name,
-                        long = userLocation.long,
-                        lat = userLocation.lat,
-                        imageUrl = userLocation.imageUrl,
-                        address = address
-                    )
+                    userLocationWithAddressModel
                 )
             } else {
                 LocationDetailViewResult.LoadLocationDetailResult.Empty
@@ -45,5 +37,6 @@ class LocationDetailViewActionProcessor @Inject constructor(
         }.catch { cause: Throwable ->
             emit(LocationDetailViewResult.LoadLocationDetailResult.Error(cause))
         }
+
 
 }

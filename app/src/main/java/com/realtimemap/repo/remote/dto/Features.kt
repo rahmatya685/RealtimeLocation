@@ -19,11 +19,11 @@ data class Features (
 	val type : String,
 	val place_type : List<String>,
 	val relevance : Int,
-	val properties : Properties,
+	val properties : Properties?,
 	val text : String,
 	val place_name : String,
 	val center : List<Double>,
 	val geometry : Geometry,
-	val address : Int,
+	val address : Int?,
 	val context : List<Context>
 )

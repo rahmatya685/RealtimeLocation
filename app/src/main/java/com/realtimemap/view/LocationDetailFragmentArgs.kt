@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.navigation.NavArgs
 import com.realtimemap.domain.model.UserLocation
+import com.realtimemap.navigation.NavigationDispatcherImpl
 import java.io.Serializable
 
 
@@ -29,10 +30,10 @@ data class LocationDetailFragmentArgs(
         fun fromBundle(bundle: Bundle): LocationDetailFragmentArgs {
             bundle.setClassLoader(UserLocation::class.java.classLoader)
             val __userLocation : UserLocation?
-            if (bundle.containsKey("locationInfo")) {
+            if (bundle.containsKey(NavigationDispatcherImpl.LOCATION_KEY)) {
                 if (Parcelable::class.java.isAssignableFrom(UserLocation::class.java) ||
                     Serializable::class.java.isAssignableFrom(UserLocation::class.java)) {
-                    __userLocation = bundle.get("locationInfo") as UserLocation?
+                    __userLocation = bundle.get(NavigationDispatcherImpl.LOCATION_KEY) as UserLocation?
                 } else {
                     throw UnsupportedOperationException(UserLocation::class.java.name +
                             " must implement Parcelable or Serializable or must be an Enum.")

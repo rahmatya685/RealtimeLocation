@@ -21,7 +21,6 @@ import com.realtimemap.R
 import com.realtimemap.databinding.FragmentMapBinding
 import com.realtimemap.di.inject
 import com.realtimemap.domain.model.LocationUpdate
-import com.realtimemap.domain.model.UserLocation
 import com.realtimemap.ext.observe
 import com.realtimemap.ext.toJson
 import com.realtimemap.navigation.NavigationDispatcher
@@ -45,12 +44,12 @@ class MapFragment :
     Fragment(R.layout.fragment_map),
     MVIView<MapViewIntent, MapViewState> {
 
-    var ID_MAP_ICON = "MAP_ICON"
+    private var ID_MAP_ICON = "MAP_ICON"
 
 
     lateinit var symbolManager: SymbolManagerWrapper
 
-    val channel: Channel<MapViewIntent> = Channel { }
+    private val channel: Channel<MapViewIntent> = Channel { }
 
     private val locations: MutableMap<Int, Symbol> = mutableMapOf()
 
@@ -75,7 +74,7 @@ class MapFragment :
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.viewState.observe(viewLifecycleOwner, ::render)
-        viewModel.processIntent(intents)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -100,13 +99,13 @@ class MapFragment :
         state.location?.consume(navigator.get()::openLocationInfoFragment)
     }
 
-    private val openStepInfoIntent: Flow<MapViewIntent.ShowLocationDetailIntent>
+    private val getAddressIntent: Flow<MapViewIntent.ShowLocationDetailIntent>
         get() = symbolManager.symbolClicks.map { userLocationDetail ->
             MapViewIntent.ShowLocationDetailIntent(userLocation = userLocationDetail)
         }
 
     override val intents: Flow<MapViewIntent>
-        get() = merge(channel.consumeAsFlow(), openStepInfoIntent)
+        get() = merge(channel.consumeAsFlow(), getAddressIntent)
 
     private fun renderEmptyState(state: MapViewState) {
         Snackbar.make(
@@ -166,7 +165,7 @@ class MapFragment :
                 )
             )
             symbolManager = SymbolManagerWrapper(binding.mapView, mapboxMap, style)
-            symbolManager.addClickListener(this::onSymbolClickListener)
+            viewModel.processIntent(intents)
             channel.offer(MapViewIntent.LoadInitialViewIntent)
             channel.offer(MapViewIntent.GetLocationUpdatesIntent)
         }
@@ -183,9 +182,6 @@ class MapFragment :
         }
     }
 
-    private fun onSymbolClickListener(userLocation: UserLocation) {
-
-    }
 
     override fun onStart() {
         super.onStart()
