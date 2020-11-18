@@ -48,28 +48,28 @@ class MapActionProcessor @Inject constructor(
             emit(MapViewResult.RetryFetchResult.Loading)
         }.catch { cause: Throwable ->
             emit(MapViewResult.RetryFetchResult.Error(cause))
-        }
+      listOf<UserLocation>()  }
 
     private val loadLocations: Flow<MapViewResult>
         get() = locations.map { locations ->
             if (locations.isNotEmpty()) {
-                MapViewResult.LoadInitialResult.Loaded(locations = locations)
+                MapViewResult.LoadLocationsResult.Loaded(locations = locations)
             } else {
-                MapViewResult.LoadInitialResult.Empty
+                MapViewResult.LoadLocationsResult.Empty
             }
         }.onStart {
-            emit(MapViewResult.LoadInitialResult.Loading)
+            emit(MapViewResult.LoadLocationsResult.Loading)
         }.catch { cause: Throwable ->
-            emit(MapViewResult.LoadInitialResult.Error(cause))
+            emit(MapViewResult.LoadLocationsResult.Error(cause))
         }
 
 
     private val getUpdates: Flow<MapViewResult>
         get() = locationUpdates.map { location ->
-            if (location != null) {
-                MapViewResult.GetLocationUpdates.Updated(location)
-            } else {
+            if (location.id == -1) {
                 MapViewResult.GetLocationUpdates.Empty
+            } else {
+                MapViewResult.GetLocationUpdates.Updated(location)
             }
         }.onStart {
             emit(MapViewResult.GetLocationUpdates.Loading)

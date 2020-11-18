@@ -13,7 +13,7 @@ class MapViewStateReducer @Inject constructor(private val mapModelMapper: MapMod
 
     override fun reduce(previous: MapViewState, result: MapViewResult): MapViewState {
         return when (result) {
-            is MapViewResult.LoadInitialResult -> handleLoadInitialResult(
+            is MapViewResult.LoadLocationsResult -> handleLoadInitialResult(
                 mapModelMapper,
                 result,
                 previous
@@ -70,21 +70,21 @@ class MapViewStateReducer @Inject constructor(private val mapModelMapper: MapMod
 
     private fun handleLoadInitialResult(
         mapper: MapModelMapper,
-        loadInitialResult: MapViewResult.LoadInitialResult,
+        loadInitialResult: MapViewResult.LoadLocationsResult,
         previous: MapViewState
     ): MapViewState {
         return when (loadInitialResult) {
-            is MapViewResult.LoadInitialResult.Loaded -> previous.loadedState(
+            is MapViewResult.LoadLocationsResult.Loaded -> previous.loadedState(
                 mapper.mapToModelList(
                     loadInitialResult.locations
                 )
             )
-            is MapViewResult.LoadInitialResult.Error -> handleErrorState(
+            is MapViewResult.LoadLocationsResult.Error -> handleErrorState(
                 previous,
                 loadInitialResult.cause.message!!
             )
-            MapViewResult.LoadInitialResult.Empty -> handleEmptyState(previous)
-            MapViewResult.LoadInitialResult.Loading -> previous.loadingState
+            MapViewResult.LoadLocationsResult.Empty -> handleEmptyState(previous)
+            MapViewResult.LoadLocationsResult.Loading -> previous.loadingState
 
         }
     }

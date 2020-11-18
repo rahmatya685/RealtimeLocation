@@ -6,7 +6,7 @@ import com.realtimemap.presentation.mvi.MapViewActionProcessor
 import com.realtimemap.presentation.mvi.StateMachine
 import javax.inject.Inject
 
-class HomeStateMachine @Inject constructor(
+class MapStateMachine @Inject constructor(
     actionProcessor: MapViewActionProcessor,
     intentProcessor: MapIntentProcessor,
     stateReducer: MapStateReducer

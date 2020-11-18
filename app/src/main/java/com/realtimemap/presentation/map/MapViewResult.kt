@@ -14,11 +14,11 @@ sealed class MapViewResult : ViewResult {
         data class Error(val cause: Throwable) : GetLocationUpdates()
     }
 
-    sealed class LoadInitialResult : MapViewResult() {
-        data class Loaded(val locations: List<UserLocation>) : LoadInitialResult()
-        object Loading : LoadInitialResult()
-        object Empty : LoadInitialResult()
-        data class Error(val cause: Throwable) : LoadInitialResult()
+    sealed class LoadLocationsResult : MapViewResult() {
+        data class Loaded(val locations: List<UserLocation>) : LoadLocationsResult()
+        object Loading : LoadLocationsResult()
+        object Empty : LoadLocationsResult()
+        data class Error(val cause: Throwable) : LoadLocationsResult()
     }
     data class ShowLocationDetail(val location:UserLocationModel) : MapViewResult()
 
