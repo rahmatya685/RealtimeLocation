@@ -210,7 +210,6 @@ class MapFragment :
 
     override fun onDestroy() {
         super.onDestroy()
-        binding.mapView.onDestroy()
     }
 
     override fun onLowMemory() {
